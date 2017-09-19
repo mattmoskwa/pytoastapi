@@ -11,7 +11,7 @@ ORDERS_ENDPOINT = "orders/v2/orders/"
 LABOR_ENDPOINT = "labor/v1/"
 EMPLOYEES_ENDPOINT = "employees/"
 JOBS_ENDPOINT = "jobs/"
-ISO_TIMEZOME = ".000-0400"
+ISO_TIMEZONE = ".000-0400"
 
 
 class PyToast(object):
@@ -89,8 +89,8 @@ class PyToast(object):
         
         ''' Returns a JSON object containing all data relating to multiple orders sent within a specified time period. '''
         
-        iso_start_date =  dateutil.parser.parse(start_date).isoformat() + ISO_TIMEZOME
-        iso_end_date =   dateutil.parser.parse(end_date).isoformat() + ISO_TIMEZOME
+        iso_start_date =  dateutil.parser.parse(start_date).isoformat() + ISO_TIMEZONE
+        iso_end_date =   dateutil.parser.parse(end_date).isoformat() + ISO_TIMEZONE
 
         endpoint = self.base_url + ORDERS_ENDPOINT + "?startDate={}&endDate={}".format(iso_start_date, iso_end_date)
 
