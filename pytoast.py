@@ -204,21 +204,3 @@ class PyToast(object):
         except TypeError:
             return False
 
-
-
-'''     def add_new_employee(self, rguid=None, **kwargs):
-
-        endpoint = self.base_url + EMPLOYEES_ENDPOINT
-
-        data = [ 
-            (key,value) for key, value in kwargs.items()
-        ]
-
-        if rguid is not None: self.headers['Toast-Restaurant-External-ID'] = rguid
-        
-        r = requests.get(endpoint, headers=self.headers, data=data)
-
-        return json.loads(r.content) '''
-
-
-    
