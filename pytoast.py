@@ -74,6 +74,9 @@ class PyToast(object):
         
         r = requests.get(endpoint, headers=self.headers)     
         
+        # should just be
+        # if self.auth_expired(json.loads(r.content))
+        # if foo == True is redundant
         if self.auth_expired(json.loads(r.content)) == True:
             
             self.headers['Authorization'] = 'Bearer {}'.format(self.create_auth_token(self.auth_url, self.data, self.headers))
@@ -89,15 +92,26 @@ class PyToast(object):
         
         ''' Returns a JSON object containing all data relating to multiple orders sent within a specified time period. '''
         
+        # It's better to add the timezone while you have a datetime object,
+        # rather than stringifying it and adding the ISO code afterwards
+        # The rationale here is that it's best to work with code objects for as long as you can,
+        # and only turn it into a string when you really need to
+        # iso_start_date = dateutil.parser.parse(start_date).replace(tzinfo=datetime.timezone(offset=datetime.timedelta(hours=-4)))
+        # now iso_start_date.isoformat() will give you exactly what you want
         iso_start_date =  dateutil.parser.parse(start_date).isoformat() + ISO_TIMEZONE
         iso_end_date =   dateutil.parser.parse(end_date).isoformat() + ISO_TIMEZONE
-
+        
+        # I don't like to mix string concatenation and String.format
+        # This would look better as
+        # endpoint = "{base_url}/{orders_endpoint}".format(base_url=self.base_url, orders_endpoint=ORDERS_ENDPOINT)
+        # As for the params, you're using requests, so you can just pass them in as a dict in the requests.get call
+        # requests.get(endpoint, headers=self.headers, params={'startDate' : iso_start_date, 'endDate' : iso_end_date})
         endpoint = self.base_url + ORDERS_ENDPOINT + "?startDate={}&endDate={}".format(iso_start_date, iso_end_date)
 
         if rguid is not None: self.headers['Toast-Restaurant-External-ID'] = rguid
         
         r = requests.get(endpoint, headers=self.headers)
-        
+       
         if self.auth_expired(json.loads(r.content)) == True:
                 
             self.headers['Authorization'] = 'Bearer {}'.format(self.create_auth_token(self.auth_url, self.data, self.headers))
@@ -146,7 +160,9 @@ class PyToast(object):
 
 
     def get_employee(self, eguid, rguid=None):
-            
+        
+        # this would be easier to read using String.format
+        # that goes for most strings that are concantenations of more than a few strings
         endpoint = self.base_url + LABOR_ENDPOINT + "employee/" + eguid
 
         if rguid is not None: self.headers['Toast-Restaurant-External-ID'] = rguid
